@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container movie-detail">
+    <div class="movie-header">
+        {% if movie.poster_path %}
+        <img src="https://image.tmdb.org/t/p/w300{{ movie.poster_path }}" alt="{{ movie.title }}">
+        {% endif %}
+        <div class="info">
+            <h1>{{ movie.title }}</h1>
+            <p>Released: {{ movie.release_date }}</p>
+        </div>
+    </div>
+
+    <div class="log-entry-form">
+        <h2>Log Watch Entry</h2>
+        <form method="post">
+            <div class="form-group">
+                <label for="rating">Rating (1-10)</label>
+                <input type="number" id="rating" name="rating" min="1" max="10" step="0.5" required>
+            </div>
+
+            <div class="form-group">
+                <label for="watched_at">Date Watched</label>
+                <input type="date" id="watched_at" name="watched_at" value="{{ today }}">
+            </div>
+
+            <div class="form-group">
+                <label for="comment">Comment</label>
+                <textarea id="comment" name="comment" rows="4"></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary">Save Entry</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

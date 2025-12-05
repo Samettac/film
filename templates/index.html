@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="dashboard-header">
+        <h1>My Movie Log</h1>
+        <a href="{{ url_for('search') }}" class="btn-primary">Log New Movie</a>
+    </div>
+
+    <div class="trends-section">
+        <div class="trend-card">
+            <span class="trend-value">{{ trends.weekly }}</span>
+            <span class="trend-label">This Week</span>
+        </div>
+        <div class="trend-card">
+            <span class="trend-value">{{ trends.monthly }}</span>
+            <span class="trend-label">This Month</span>
+        </div>
+        <div class="trend-card">
+            <span class="trend-value">{{ trends.yearly }}</span>
+            <span class="trend-label">This Year</span>
+        </div>
+    </div>
+
+    <div class="recent-entries">
+        <h2>Recent Watches</h2>
+        {% if entries %}
+        <div class="entries-list">
+            {% for entry in entries %}
+            <div class="entry-card">
+                <div class="poster-thumb">
+                    {% if entry.movie.poster_path %}
+                    <img src="https://image.tmdb.org/t/p/w200{{ entry.movie.poster_path }}"
+                        alt="{{ entry.movie.title }}">
+                    {% endif %}
+                </div>
+                <div class="entry-details">
+                    <h3>{{ entry.movie.title }}</h3>
+                    <div class="meta">
+                        <span class="rating">⭐ {{ entry.rating }}/10</span>
+                        <span class="date">{{ entry.watched_at.strftime('%Y-%m-%d') }}</span>
+                    </div>
+                    {% if entry.comment %}
+                    <p class="comment">"{{ entry.comment }}"</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="empty-state">No movies logged yet. <a href="{{ url_for('search') }}">Add your first one!</a></p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
