@@ -2,11 +2,10 @@
 
 {% block content %}
 <div class="px-4 sm:px-6 md:px-10 py-5">
-    <h1 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-6">Search Results</h1>
 
     {% if search_query %}
-    <p class="text-white/60 mb-4">Results for "<span class="text-white">{{ search_query }}</span>"</p>
-    {% endif %}
+    <h1 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-6">Search Results</h1>
+    <p class="text-white/60 mb-8">Results for "<span class="text-white font-medium">{{ search_query }}</span>"</p>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {% for movie in results %}
@@ -16,24 +15,52 @@
                 <div
                     class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <a href="{{ url_for('add_movie_entry', tmdb_id=movie.id) }}"
-                        class="bg-primary text-white font-bold py-2 px-6 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                        class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                         Log Movie
                     </a>
                 </div>
             </div>
             <div>
-                <p class="text-white text-base font-medium leading-normal truncate">{{ movie.title }}</p>
+                <p class="text-white text-base font-medium leading-normal truncate" title="{{ movie.title }}">{{
+                    movie.title }}</p>
                 <p class="text-white/60 text-sm font-normal leading-normal">{{ movie.release_date[:4] if
                     movie.release_date else 'N/A' }}</p>
             </div>
         </div>
         {% else %}
-        {% if search_query %}
-        <div class="col-span-full text-center py-10">
-            <p class="text-white/60">No movies found.</p>
+        <div class="col-span-full text-center py-20 bg-white/5 rounded-2xl border border-white/10">
+            <p class="text-white/60 text-lg">No movies found matching your search.</p>
+            <a href="{{ url_for('search') }}" class="inline-block mt-4 text-primary hover:underline">Try another
+                search</a>
         </div>
-        {% endif %}
         {% endfor %}
     </div>
+    {% else %}
+    <!-- Empty State / Landing for Add Page -->
+    <div class="flex flex-col items-center justify-center py-20 text-center min-h-[60vh]">
+        <div class="bg-white/5 p-8 rounded-full mb-8 border border-white/10">
+            <span class="material-symbols-outlined !text-6xl text-white/20">movie</span>
+        </div>
+        <h2 class="text-white text-4xl font-bold mb-4 tracking-tight">Add a Movie to your Log</h2>
+        <p class="text-white/60 max-w-md mb-10 text-lg">Search for a movie below to find it, rate it, and add it to your
+            watched list.</p>
+
+        <form action="{{ url_for('search') }}" method="get" class="w-full max-w-lg relative z-10">
+            <div
+                class="flex w-full items-stretch rounded-full h-14 bg-white/10 ring-1 ring-white/10 focus-within:ring-2 focus-within:ring-primary focus-within:bg-white/15 transition-all shadow-xl">
+                <div class="text-white/60 flex items-center justify-center pl-6">
+                    <span class="material-symbols-outlined">search</span>
+                </div>
+                <input name="q"
+                    class="flex-1 bg-transparent border-none text-white text-lg focus:ring-0 px-4 placeholder:text-white/40"
+                    placeholder="Type a movie title (e.g. Inception)..." required autofocus>
+                <button type="submit"
+                    class="px-8 text-white font-bold text-base bg-primary rounded-r-full hover:bg-primary/90 transition-colors">
+                    Search
+                </button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
