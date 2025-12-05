@@ -1,25 +1,38 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <h1>Add a Movie</h1>
-    <form action="{{ url_for('search') }}" method="get" class="search-form">
-        <input type="text" name="q" placeholder="Search for a movie..." value="{{ search_query }}" required>
-        <button type="submit">Search</button>
-    </form>
+<div class="px-4 sm:px-6 md:px-10 py-5">
+    <h1 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-6">Search Results</h1>
 
-    <div class="movie-grid">
+    {% if search_query %}
+    <p class="text-white/60 mb-4">Results for "<span class="text-white">{{ search_query }}</span>"</p>
+    {% endif %}
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
         {% for movie in results %}
-        <div class="movie-card">
-            {% if movie.poster_path %}
-            <img src="https://image.tmdb.org/t/p/w200{{ movie.poster_path }}" alt="{{ movie.title }}">
-            {% else %}
-            <div class="no-poster">No Image</div>
-            {% endif %}
-            <h3>{{ movie.title }}</h3>
-            <p>{{ movie.release_date }}</p>
-            <a href="{{ url_for('add_movie_entry', tmdb_id=movie.id) }}" class="btn">Add to Log</a>
+        <div class="flex flex-col gap-3 group">
+            <div class="w-full bg-center bg-no-repeat aspect-[2/3] bg-cover rounded-lg flex flex-col relative overflow-hidden group-hover:ring-2 ring-primary transition-all duration-300"
+                style="background-image: url('{% if movie.poster_path %}https://image.tmdb.org/t/p/w400{{ movie.poster_path }}{% else %}https://via.placeholder.com/400x600?text=No+Image{% endif %}');">
+                <div
+                    class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <a href="{{ url_for('add_movie_entry', tmdb_id=movie.id) }}"
+                        class="bg-primary text-white font-bold py-2 px-6 rounded-full transform translate-y-4 group-hover:translate-y-0 transition-transform">
+                        Log Movie
+                    </a>
+                </div>
+            </div>
+            <div>
+                <p class="text-white text-base font-medium leading-normal truncate">{{ movie.title }}</p>
+                <p class="text-white/60 text-sm font-normal leading-normal">{{ movie.release_date[:4] if
+                    movie.release_date else 'N/A' }}</p>
+            </div>
         </div>
+        {% else %}
+        {% if search_query %}
+        <div class="col-span-full text-center py-10">
+            <p class="text-white/60">No movies found.</p>
+        </div>
+        {% endif %}
         {% endfor %}
     </div>
 </div>

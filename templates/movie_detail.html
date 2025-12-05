@@ -1,37 +1,67 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container movie-detail">
-    <div class="movie-header">
-        {% if movie.poster_path %}
-        <img src="https://image.tmdb.org/t/p/w300{{ movie.poster_path }}" alt="{{ movie.title }}">
-        {% endif %}
-        <div class="info">
-            <h1>{{ movie.title }}</h1>
-            <p>Released: {{ movie.release_date }}</p>
+<div class="px-4 sm:px-6 md:px-10 py-5 max-w-4xl mx-auto">
+    <div class="flex flex-col md:flex-row gap-8">
+        <!-- Poster Side -->
+        <div class="w-full md:w-1/3 flex-shrink-0">
+            <div class="rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+                {% if movie.poster_path %}
+                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}"
+                    class="w-full h-auto object-cover">
+                {% else %}
+                <div class="w-full aspect-[2/3] bg-white/5 flex items-center justify-center text-white/40">No Poster
+                </div>
+                {% endif %}
+            </div>
         </div>
-    </div>
 
-    <div class="log-entry-form">
-        <h2>Log Watch Entry</h2>
-        <form method="post">
-            <div class="form-group">
-                <label for="rating">Rating (1-10)</label>
-                <input type="number" id="rating" name="rating" min="1" max="10" step="0.5" required>
+        <!-- Details & Form Side -->
+        <div class="flex-1">
+            <h1 class="text-white text-4xl font-black leading-tight tracking-[-0.033em] mb-2">{{ movie.title }}</h1>
+            <div class="flex items-center gap-4 text-white/60 text-sm mb-6">
+                <span>{{ movie.release_date[:4] if movie.release_date else 'N/A' }}</span>
+                <span>•</span>
+                <span>{{ movie.runtime }} mins</span>
             </div>
 
-            <div class="form-group">
-                <label for="watched_at">Date Watched</label>
-                <input type="date" id="watched_at" name="watched_at" value="{{ today }}">
-            </div>
+            <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+                <h2 class="text-white text-xl font-bold mb-4">Log this Watch</h2>
+                <form method="post" class="flex flex-col gap-5">
+                    <!-- Rating -->
+                    <div class="flex flex-col gap-2">
+                        <label for="rating" class="text-white font-medium">Rating</label>
+                        <div class="flex items-center gap-4">
+                            <input type="range" id="rating-range" name="rating" min="1" max="10" step="0.5"
+                                class="flex-1 h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-primary"
+                                oninput="document.getElementById('rating-val').innerText = this.value">
+                            <span class="text-white font-bold w-12 text-right"><span id="rating-val">5</span>/10</span>
+                        </div>
+                    </div>
 
-            <div class="form-group">
-                <label for="comment">Comment</label>
-                <textarea id="comment" name="comment" rows="4"></textarea>
-            </div>
+                    <!-- Date -->
+                    <div class="flex flex-col gap-2">
+                        <label for="watched_at" class="text-white font-medium">Date Watched</label>
+                        <input type="date" id="watched_at" name="watched_at"
+                            class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                            required>
+                    </div>
 
-            <button type="submit" class="btn-primary">Save Entry</button>
-        </form>
+                    <!-- Comment -->
+                    <div class="flex flex-col gap-2">
+                        <label for="comment" class="text-white font-medium">Private Note / Comment</label>
+                        <textarea id="comment" name="comment" rows="4"
+                            class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                            placeholder="What did you think?"></textarea>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-primary/20 mt-2">
+                        Save Entry
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}
