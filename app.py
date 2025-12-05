@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
+from sqlalchemy import func
 import tmdb_service
+import os
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -15,6 +17,7 @@ class Movie(db.Model):
     title = db.Column(db.String(255), nullable=False)
     poster_path = db.Column(db.String(255))
     release_date = db.Column(db.String(20))
+    runtime = db.Column(db.Integer) # in minutes
     # Relationship to watch entries
     entries = db.relationship('WatchEntry', backref='movie', lazy=True)
 
@@ -25,38 +28,37 @@ class WatchEntry(db.Model):
     comment = db.Column(db.Text)
     watched_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'movie_title': self.movie.title,
-            'rating': self.rating,
-            'comment': self.comment,
-            'watched_at': self.watched_at.strftime('%Y-%m-%d')
-        }
-
 with app.app_context():
     db.create_all()
 
 @app.route('/')
 def index():
     now = datetime.utcnow()
-    week_ago = now - timedelta(days=7)
     month_ago = now - timedelta(days=30)
-    year_ago = now - timedelta(days=365)
 
-    weekly_count = WatchEntry.query.filter(WatchEntry.watched_at >= week_ago).count()
+    # Stats Calculation
+    total_movies = WatchEntry.query.count()
     monthly_count = WatchEntry.query.filter(WatchEntry.watched_at >= month_ago).count()
-    yearly_count = WatchEntry.query.filter(WatchEntry.watched_at >= year_ago).count()
+    
+    # Calculate average rating
+    avg_rating_result = db.session.query(func.avg(WatchEntry.rating)).scalar()
+    avg_rating = round(avg_rating_result, 1) if avg_rating_result else 0.0
+
+    # Calculate total hours (sum of runtimes)
+    # Join WatchEntry with Movie to sum runtimes
+    total_minutes_result = db.session.query(func.sum(Movie.runtime)).join(WatchEntry).scalar()
+    total_hours = round((total_minutes_result or 0) / 60)
     
     entries = WatchEntry.query.order_by(WatchEntry.watched_at.desc()).all()
     
-    trends = {
-        'weekly': weekly_count,
-        'monthly': monthly_count,
-        'yearly': yearly_count
+    stats = {
+        'total_movies': total_movies,
+        'monthly_count': monthly_count,
+        'avg_rating': avg_rating,
+        'total_hours': total_hours
     }
     
-    return render_template('index.html', entries=entries, trends=trends)
+    return render_template('index.html', entries=entries, stats=stats)
 
 @app.route('/search')
 def search():
@@ -78,7 +80,8 @@ def add_movie_entry(tmdb_id):
                 tmdb_id=details['id'],
                 title=details['title'],
                 poster_path=details.get('poster_path'),
-                release_date=details.get('release_date')
+                release_date=details.get('release_date'),
+                runtime=details.get('runtime')
             )
             db.session.add(movie)
             db.session.commit()

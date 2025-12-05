@@ -1,55 +1,75 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <div class="dashboard-header">
-        <h1>My Movie Log</h1>
-        <a href="{{ url_for('search') }}" class="btn-primary">Log New Movie</a>
-    </div>
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between gap-3 p-4">
+    <p class="text-white text-4xl font-black leading-tight tracking-[-0.033em] min-w-72">Welcome back!</p>
+</div>
 
-    <div class="trends-section">
-        <div class="trend-card">
-            <span class="trend-value">{{ trends.weekly }}</span>
-            <span class="trend-label">This Week</span>
-        </div>
-        <div class="trend-card">
-            <span class="trend-value">{{ trends.monthly }}</span>
-            <span class="trend-label">This Month</span>
-        </div>
-        <div class="trend-card">
-            <span class="trend-value">{{ trends.yearly }}</span>
-            <span class="trend-label">This Year</span>
-        </div>
+<!-- Stats -->
+<div class="flex flex-wrap gap-4 p-4">
+    <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6 bg-white/5 border border-white/10">
+        <p class="text-white/80 text-base font-medium leading-normal">Movies Watched</p>
+        <p class="text-white tracking-light text-3xl font-bold leading-tight">{{ stats.total_movies }}</p>
+        <p class="text-green-400 text-sm font-medium leading-normal">+{{ stats.monthly_count }} this month</p>
     </div>
+    <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6 bg-white/5 border border-white/10">
+        <p class="text-white/80 text-base font-medium leading-normal">Hours Logged</p>
+        <p class="text-white tracking-light text-3xl font-bold leading-tight">{{ stats.total_hours }}</p>
+        <p class="text-white/60 text-sm font-medium leading-normal">All time</p>
+    </div>
+    <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6 bg-white/5 border border-white/10">
+        <p class="text-white/80 text-base font-medium leading-normal">Average Rating</p>
+        <p class="text-white tracking-light text-3xl font-bold leading-tight">{{ "%.1f"|format(stats.avg_rating) }}/10
+        </p>
+        <p class="text-orange-400 text-sm font-medium leading-normal">Based on {{ stats.total_movies }} ratings</p>
+    </div>
+</div>
 
-    <div class="recent-entries">
-        <h2>Recent Watches</h2>
-        {% if entries %}
-        <div class="entries-list">
-            {% for entry in entries %}
-            <div class="entry-card">
-                <div class="poster-thumb">
-                    {% if entry.movie.poster_path %}
-                    <img src="https://image.tmdb.org/t/p/w200{{ entry.movie.poster_path }}"
-                        alt="{{ entry.movie.title }}">
-                    {% endif %}
-                </div>
-                <div class="entry-details">
-                    <h3>{{ entry.movie.title }}</h3>
-                    <div class="meta">
-                        <span class="rating">⭐ {{ entry.rating }}/10</span>
-                        <span class="date">{{ entry.watched_at.strftime('%Y-%m-%d') }}</span>
-                    </div>
-                    {% if entry.comment %}
-                    <p class="comment">"{{ entry.comment }}"</p>
-                    {% endif %}
-                </div>
+<!-- Recently Watched (Carousel) -->
+<h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-8">Recent Movies</h2>
+<div class="flex overflow-x-auto [-ms-scrollbar-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div class="flex items-stretch p-4 gap-4">
+        {% for entry in entries[:10] %}
+        <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-52">
+            <div class="w-full bg-center bg-no-repeat aspect-[2/3] bg-cover rounded-lg flex flex-col"
+                style="background-image: url('https://image.tmdb.org/t/p/w400{{ entry.movie.poster_path }}');"></div>
+            <div>
+                <p class="text-white text-base font-medium leading-normal">{{ entry.movie.title }}</p>
+                <p class="text-white/60 text-sm font-normal leading-normal">{{ entry.movie.release_date[:4] if
+                    entry.movie.release_date else 'N/A' }}</p>
             </div>
-            {% endfor %}
         </div>
-        {% else %}
-        <p class="empty-state">No movies logged yet. <a href="{{ url_for('search') }}">Add your first one!</a></p>
-        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+<!-- My Ratings and Comments Section -->
+<div class="p-4 mt-8">
+    <h2 class="text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-3">My Ratings & Comments</h2>
+    <div class="flex flex-col gap-4">
+        {% for entry in entries %}
+        <div class="flex items-start gap-4 p-4 rounded-lg bg-white/5 border border-white/10">
+            <div class="w-16 h-24 bg-center bg-no-repeat bg-cover rounded-md flex-shrink-0"
+                style="background-image: url('https://image.tmdb.org/t/p/w200{{ entry.movie.poster_path }}');"></div>
+            <div class="flex flex-col w-full">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-white font-semibold">{{ entry.movie.title }}</p>
+                        <p class="text-white/60 text-sm">{{ entry.movie.release_date[:4] if entry.movie.release_date
+                            else 'N/A' }}</p>
+                    </div>
+                    <p class="text-white/60 text-sm">{{ entry.watched_at.strftime('%Y-%m-%d') }}</p>
+                </div>
+                <div class="flex items-center gap-1 mt-2 text-yellow-400">
+                    <span class="text-white ml-2 font-bold">{{ entry.rating }}/10</span>
+                </div>
+                {% if entry.comment %}
+                <p class="text-white/90 mt-3 text-base leading-relaxed">"{{ entry.comment }}"</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
