@@ -165,4 +165,5 @@ def add_movie_entry(tmdb_id):
     return render_template('movie_detail.html', movie=movie)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
