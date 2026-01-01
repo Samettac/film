@@ -26,11 +26,11 @@
             </div>
 
             <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
-                <h2 class="text-white text-xl font-bold mb-4">Log this Watch</h2>
+                <h2 class="text-white text-xl font-bold mb-4">Filmi Kaydet</h2>
                 <form method="post" class="flex flex-col gap-5">
                     <!-- Rating -->
                     <div class="flex flex-col gap-2">
-                        <label for="rating" class="text-white font-medium">Rating</label>
+                        <label for="rating" class="text-white font-medium">Puan</label>
                         <div class="flex items-center gap-4">
                             <input type="range" id="rating-range" name="rating" min="1" max="10" step="0.5"
                                 class="flex-1 h-2 bg-white/20 rounded-lg appearance-none cursor-pointer accent-primary"
@@ -41,7 +41,7 @@
 
                     <!-- Date -->
                     <div class="flex flex-col gap-2">
-                        <label for="watched_at" class="text-white font-medium">Date Watched</label>
+                        <label for="watched_at" class="text-white font-medium">İzlenme Tarihi</label>
                         <input type="date" id="watched_at" name="watched_at"
                             class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                             required>
@@ -49,15 +49,15 @@
 
                     <!-- Comment -->
                     <div class="flex flex-col gap-2">
-                        <label for="comment" class="text-white font-medium">Private Note / Comment</label>
+                        <label for="comment" class="text-white font-medium">Kişisel Not / Yorum</label>
                         <textarea id="comment" name="comment" rows="4"
                             class="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
-                            placeholder="What did you think?"></textarea>
+                            placeholder="Film nasıldı? Düşüncelerini yaz..."></textarea>
                     </div>
 
                     <button type="submit"
                         class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-primary/20 mt-2">
-                        Save Entry
+                        Kaydet
                     </button>
                 </form>
             </div>

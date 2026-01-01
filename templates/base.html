@@ -57,6 +57,7 @@
                                 class="text-white text-lg font-bold leading-tight tracking-[-0.015em] hidden sm:block">MovieTracker</a>
                         </div>
                         <div class="flex flex-1 justify-end items-center gap-4 sm:gap-6 md:gap-8">
+                            {% if current_user.is_authenticated %}
                             <form action="{{ url_for('search') }}" method="get"
                                 class="hidden sm:flex flex-col min-w-40 !h-10 max-w-64">
                                 <div class="flex w-full flex-1 items-stretch rounded-full h-full">
@@ -66,17 +67,29 @@
                                     </div>
                                     <input name="q"
                                         class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-full text-white focus:outline-0 focus:ring-0 border-none bg-white/10 focus:border-none h-full placeholder:text-white/60 px-4 rounded-l-none border-l-0 pl-2 text-base font-normal leading-normal"
-                                        placeholder="Search movies..."
-                                        value="{{ search_query if search_query else '' }}" />
+                                        placeholder="Film ara..." value="{{ search_query if search_query else '' }}" />
                                 </div>
                             </form>
                             <a href="{{ url_for('search') }}"
                                 class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-10 px-4 bg-primary text-white text-sm font-bold leading-normal tracking-[0.015em]">
-                                <span class="truncate">Add Movie</span>
+                                <span class="truncate">Film Ekle</span>
                             </a>
-                            <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10"
-                                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAZE3i77LUbanRMU7o6gG2mVqchrS-pQF7uw1XYkPzvtNr0tikBVVVKiwmU8ef6iVSe92mSkSVC1S7vHYWrnpgwjSzfrdxPy0UGxfWfkuCFBfbWfC6Mi9j4ROBXlhF1YqZWJieud5CIRDAl5wInGU4WZRO4Mey33CJgkRjFwf4cuwHRRJbUbSgAfw6ztfR9UBlv96D8Wm9298kNGozgtg52tHwXw5oEJfaNxanqMkQd4ezNMpdvMVYWjMsEbDAmABFi1QmXven1vu1G');">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="bg-primary/20 text-primary font-bold rounded-full size-10 flex items-center justify-center border border-primary/30">
+                                    {{ current_user.name[:1] }}
+                                </div>
+                                <a href="{{ url_for('logout') }}"
+                                    class="text-white/60 hover:text-white text-sm font-medium transition-colors">Çıkış</a>
                             </div>
+                            {% else %}
+                            <a href="{{ url_for('login') }}"
+                                class="text-white font-medium text-sm hover:text-primary transition-colors">Giriş
+                                Yap</a>
+                            <a href="{{ url_for('signup') }}"
+                                class="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-6 rounded-full text-sm transition-colors">Kayıt
+                                Ol</a>
+                            {% endif %}
                         </div>
                     </header>
                     <main class="flex-1 mt-6">

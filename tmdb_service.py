@@ -8,7 +8,6 @@ TMDB_API_KEY = os.getenv('TMDB_API_KEY')
 BASE_URL = "https://api.themoviedb.org/3"
 
 def search_movies(query):
-    """Search for movies on TMDB."""
     if not TMDB_API_KEY:
         return []
     
@@ -25,7 +24,6 @@ def search_movies(query):
     return []
 
 def get_movie_details(tmdb_id):
-    """Get detailed info for a specific movie."""
     if not TMDB_API_KEY:
         return None
 
