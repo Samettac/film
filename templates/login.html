@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[calc(100vh-80px)]">
+    <div class="w-full max-w-md p-8 bg-white/5 border border-white/10 rounded-2xl shadow-xl">
+        <h1 class="text-3xl font-bold text-white mb-8 text-center">Tekrar Hoşgeldin</h1>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div class="bg-red-500/10 border border-red-500/20 text-red-200 px-4 py-3 rounded-lg mb-6">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/login" class="flex flex-col gap-5">
+            <div class="flex flex-col gap-2">
+                <label class="text-white font-medium">E-posta</label>
+                <input type="email" name="email"
+                    class="bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="sen@ornek.com" required>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-white font-medium">Şifre</label>
+                <input type="password" name="password"
+                    class="bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                    placeholder="••••••••" required>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-3.5 rounded-lg transition-all mt-2">
+                Giriş Yap
+            </button>
+        </form>
+
+        <p class="text-white/60 text-center mt-8">
+            Hesabın yok mu? <a href="{{ url_for('signup') }}"
+                class="text-primary hover:text-white font-medium transition-colors">Kayıt Ol</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
